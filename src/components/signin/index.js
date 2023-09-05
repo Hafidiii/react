@@ -1,17 +1,20 @@
 import React, {useState} from 'react';
 import {MDBBtn, MDBCol, MDBContainer, MDBInput, MDBRow} from 'mdb-react-ui-kit';
 import {connect, useDispatch} from "react-redux";
-import {signIn} from "../../actions/authService";
+import {setPath, signIn} from "../../actions/authService";
 
 const SignIn = (props) => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const {setPage} = props;
     const dispatch = useDispatch();
 
     const login = () => {
-        dispatch(signIn(username, password));
+        const payload = {
+            username,
+            password
+        }
+        dispatch(signIn(payload));
     }
 
     return (
@@ -45,7 +48,7 @@ const SignIn = (props) => {
 
                         <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
                             <p className="mb-0">Don't have an account?</p>
-                            <MDBBtn onClick={() => setPage('signUp')} outline className='mx-2'
+                            <MDBBtn onClick={() => dispatch(setPath('signUp'))} outline className='mx-2'
                                     color='danger'>
                                 sign up
                             </MDBBtn>

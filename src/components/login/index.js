@@ -1,14 +1,17 @@
 import React, {useState} from 'react';
 import SignIn from "../signin";
 import Signup from "../signup";
+import {connect} from "react-redux";
 
-const LoginComponent = () => {
-
-    const [page, setPage] = useState('signIn');
+const LoginComponent = ({ path }) => {
 
     return (
-        page === 'signIn' ? <SignIn setPage={setPage}/> : <Signup setPage={setPage}/>
+        path === 'signIn' ? <SignIn /> : <Signup />
     );
 };
-
-export default LoginComponent;
+const mapStateToProps = state => {
+    return {
+        path: state.authReducer.path
+    }
+}
+export default connect(mapStateToProps)(LoginComponent);

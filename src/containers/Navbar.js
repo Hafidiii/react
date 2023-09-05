@@ -16,25 +16,24 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const pages = [
         {
-            title: 'Clients', path: "/users", icon: UserIcon, authorities: ['ROLE_ADMIN']
+            title: 'Clients', path: "/users", icon: UserIcon, authorities: ['ADMIN']
         }, {
-            title: 'Orders', path: "/orders", icon: OrderIcon, authorities: ['ROLE_ADMIN']
+            title: 'Orders', path: "/orders", icon: OrderIcon, authorities: ['ADMIN']
         }, {
-            title: 'Store', path: "/stocks", icon: StoreIcon, authorities: ['ROLE_ADMIN']
+            title: 'Store', path: "/stocks", icon: StoreIcon, authorities: ['ADMIN']
         }, {
-            title: 'Cart', path: "/cart", icon: CartIcon, authorities: ['ROLE_ADMIN', 'ROLE_USER']
+            title: 'Cart', path: "/cart", icon: CartIcon, authorities: ['ADMIN', 'USER']
         }, {
-            title: 'Products', path: "/", icon: PhoneIcon, authorities: ['ROLE_ADMIN', 'ROLE_USER']
+            title: 'Products', path: "/", icon: PhoneIcon, authorities: ['ADMIN', 'USER']
         },
     ];
     return (
 
         <Fragment>
 
-
             {pages && pages.map(({title, icon, path, authorities}) =>
                 hasAuthority(authorities) && (
-                    <Link to={path} className="nav-link" style={{marginTop: 20}}>
+                    <Link key={path} to={path} className="nav-link" style={{marginTop: 20}}>
                         <OverlayTrigger placement="bottom" overlay={(props) => (
                             <Tooltip id="tooltip-top" {...props}>
                                 {title}
@@ -46,9 +45,9 @@ const Navbar = () => {
                 ))
             }
 
-
             <img style={{cursor: 'pointer', position: "fixed", bottom: 10, left: 7}} src={LogoutIcon} alt="" role="button"
                  onClick={() => dispatch(logout())}/>
+
         </Fragment>
 
 

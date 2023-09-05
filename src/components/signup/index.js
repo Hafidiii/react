@@ -1,9 +1,43 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {MDBBtn, MDBCard, MDBCardBody, MDBCol, MDBContainer, MDBInput, MDBRow} from 'mdb-react-ui-kit';
+import {setPath, signUp} from "../../actions/authService";
+import {useDispatch} from "react-redux";
 
-const Signup = (props) => {
+const Signup = () => {
 
-    const {setPage} = props;
+
+    const [firstName, setFirstname] = useState('');
+    const [lastName, setLastname] = useState('');
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const dispatch = useDispatch();
+
+    const reset = () => {
+        setUsername('');
+        setPassword('');
+        setLastname('');
+        setFirstname('');
+        setEmail('');
+        setPhone('');
+    }
+    const signup = async () => {
+        const client = {
+            firstName,
+            lastName,
+            phone,
+            email,
+            username,
+            password,
+            role: 'USER'
+        }
+
+        await dispatch(signUp(client));
+        reset();
+    };
+
     return (
         <MDBContainer style={{fontFamily: 'Lato', height: '100vh'}} fluid
                       className='p-4 background-radial-gradient overflow-hidden'>
@@ -31,23 +65,30 @@ const Signup = (props) => {
                     <MDBCard style={{borderRadius: 0}} className='my-5 bg-glass'>
                         <MDBCardBody style={{backgroundColor: '#fff'}} className='p-5'>
 
-                            <MDBInput wrapperClass='mb-4' label='First name' id='form1' type='text'/>
+                            <MDBInput wrapperClass='mb-4' label='First name' id='form1' type='text'
+                                      onChange={(e) => setFirstname(e.target.value)}/>
 
-                            <MDBInput wrapperClass='mb-4' label='Last name' id='form2' type='text'/>
+                            <MDBInput wrapperClass='mb-4' label='Last name' id='form2' type='text'
+                                      onChange={(e) => setLastname(e.target.value)}/>
 
-                            <MDBInput wrapperClass='mb-4' label='Pone' id='form3' type='number'/>
+                            <MDBInput wrapperClass='mb-4' label='Pone' id='form3' type='number'
+                                      onChange={(e) => setPhone(e.target.value)}/>
 
-                            <MDBInput wrapperClass='mb-4' label='Email' id='form3' type='email'/>
+                            <MDBInput wrapperClass='mb-4' label='Email' id='form3' type='email'
+                                      onChange={(e) => setEmail(e.target.value)}/>
 
-                            <MDBInput wrapperClass='mb-4' label='Username' id='form2' type='text'/>
+                            <MDBInput wrapperClass='mb-4' label='Username' id='form2' type='text'
+                                      onChange={(e) => setUsername(e.target.value)}/>
 
-                            <MDBInput wrapperClass='mb-4' label='Password' id='form4' type='password'/>
+                            <MDBInput wrapperClass='mb-4' label='Password' id='form4' type='password'
+                                      onChange={(e) => setPassword(e.target.value)}/>
 
-                            <MDBBtn className='w-100 mb-4' size='md'>sign up</MDBBtn>
+                            <MDBBtn className='w-100 mb-4' size='md' onClick={() => signup()}>sign up</MDBBtn>
 
                             <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
                                 <p className="mb-0">You have already an account?</p>
-                                <MDBBtn onClick={() => setPage('signIn')} outline className='mx-2' color='primary'>
+                                <MDBBtn onClick={() => dispatch(setPath('signIn'))} outline className='mx-2'
+                                        color='primary'>
                                     sign in
                                 </MDBBtn>
                             </div>

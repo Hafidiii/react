@@ -386,7 +386,7 @@ export const clients =  [
         phone: '0798897665',
         username: 'hafid',
         password: 'hafid123',
-        role: 'ROLE_ADMIN',
+        role: 'ADMIN',
         status: 'active'
     },
     {
@@ -448,7 +448,7 @@ export const clients =  [
         phone: '0700123311',
         username: 'ahmed',
         password: 'ahmed123',
-        role: 'ROLE_ADMIN',
+        role: 'ADMIN',
         status: 'inactive'
     }, {
         id: 3,

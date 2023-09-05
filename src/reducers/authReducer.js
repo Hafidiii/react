@@ -1,27 +1,42 @@
-import {LOGIN_ACTION, SIGN_IN, SIGN_IN_FAIL, SIGN_IN_SUCCESS} from "../types/authTypes";
+import {
+    ALERT,
+    HISTORY_PUSH,
+    LOGIN_ACTION,
+    SIGN_IN,
+    SIGN_IN_FAIL,
+    SIGN_IN_SUCCESS,
+    SIGN_UP,
+    SIGN_UP_FAIL,
+    SIGN_UP_SUCCESS
+} from "../types/authTypes";
 
 const initialState = {
     isLoggedIn: false,
-    profile: {
-        id: 1,
-        firstname: 'Hafid',
-        lastname: 'Ait oubouhou',
-        email: 'hafid.aitoubouhou@gmail.com',
-        phone: '0798897665',
-        username: 'hafid',
-        password: 'hafid123',
-        role: 'ROLE_ADMIN',
-        status: 'active'
+    path: 'signIn',
+    alert: {
+        open: undefined,
+        message: undefined
     },
+    profile: undefined,
     loading: false
 };
 
 export default function authReducer(state = initialState, {type, payload}) {
     switch (type) {
+        case ALERT:
+            return {
+                ...state,
+                alert: payload,
+            }
+        case HISTORY_PUSH:
+            return {
+                ...state,
+                path: payload,
+            }
         case LOGIN_ACTION:
             return {
                 ...state,
-                isLoggedIn: payload
+                isLoggedIn: payload,
             }
         case SIGN_IN:
             return {
@@ -32,13 +47,30 @@ export default function authReducer(state = initialState, {type, payload}) {
             return {
                 ...state,
                 loading: false,
-                profile: payload
+                isLoggedIn: true,
+                profile: {...payload, role: payload.roles[0].roleName}
             }
         case SIGN_IN_FAIL:
             return {
                 ...state,
                 loading: false,
+                isLoggedIn: false,
                 profile: null
+            }
+        case SIGN_UP:
+            return {
+                ...state,
+                loading: true
+            }
+        case SIGN_UP_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+            }
+        case SIGN_UP_FAIL:
+            return {
+                ...state,
+                loading: false
             }
         default:
             return state;
