@@ -41,8 +41,7 @@ const SignIn = (props) => {
 
                         <div className="text-center pt-1 mb-5 pb-1">
                             <MDBBtn onClick={login}
-                                    className="mb-4 w-100 gradient-custom-2">Sign
-                                in</MDBBtn>
+                                    className="mb-4 w-100 gradient-custom-2">Sign in</MDBBtn>
                             <a className="text-muted" href="#!">Forgot password?</a>
                         </div>
 
@@ -77,7 +76,7 @@ const SignIn = (props) => {
 
 const mapStateToProps = state => {
     return {
-        auth: state.authReducer
+        auth: state.auth
     }
 }
 export default connect(mapStateToProps)(SignIn);

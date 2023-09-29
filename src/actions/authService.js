@@ -1,7 +1,10 @@
 import {
-    ALERT,
+    ALL_USERS_SUCCESS,
     HISTORY_PUSH,
     LOGIN_ACTION,
+    REMOVE_USER,
+    REMOVE_USER_FAIL,
+    REMOVE_USER_SUCCESS,
     SIGN_IN,
     SIGN_IN_FAIL,
     SIGN_IN_SUCCESS,
@@ -11,6 +14,46 @@ import {
 import {store} from "../redux/store";
 import {API} from "../apis";
 import axios from "axios";
+import {alert} from "./alertService";
+
+export const allUsers = () => async dispatch => {
+
+    await axios.get(`${API}/clients/all`)
+        .then(res => {
+            if (res.status === 200) {
+                dispatch({
+                    type: ALL_USERS_SUCCESS,
+                    payload: res.data
+                });
+
+            }
+        })
+        .catch(() => {
+        })
+}
+
+export const removeUser = id => async dispatch => {
+
+    dispatch({
+        type: REMOVE_USER,
+
+    });
+
+    await axios.get(`${API}/clients/remove/${id}`)
+        .then(res => {
+            dispatch({
+                type: REMOVE_USER_SUCCESS,
+            });
+
+            dispatch(allUsers());
+        })
+        .catch(() => {
+            dispatch({
+                type: REMOVE_USER_FAIL,
+            });
+        })
+
+}
 
 export const signUp = client => async dispatch => {
 
@@ -51,11 +94,18 @@ export const signIn = (payload) => async dispatch => {
 
     await axios.post(`${API}/clients/login`, payload)
         .then(response => {
+
             if (response.data && response.data.success) {
                 dispatch({
                     type: SIGN_IN_SUCCESS,
                     payload: response.data.connectedUser
                 });
+            } else {
+                dispatch(alert({open: true, message: 'Authentication failed'}));
+
+                setTimeout(() => {
+                    dispatch(alert({open: undefined, message: undefined}));
+                }, 5000);
             }
         })
         .catch(() => {
@@ -82,15 +132,9 @@ export const setPath = (payload) => {
         payload
     }
 }
-export const alert = (payload) => {
-    return {
-        type: ALERT,
-        payload
-    }
-}
 
 export function getCurrentUser() {
-    return store.getState().authReducer.profile;
+    return store.getState().auth.profile;
 }
 
 export function hasAuthority(authorities) {

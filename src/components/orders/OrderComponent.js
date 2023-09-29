@@ -1,17 +1,26 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Title from "../../containers/Title";
 import {Button, Form, InputGroup, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import styled from "styled-components";
-import {orders} from "../../context/data";
+import {connect, useDispatch} from "react-redux";
+import {allCommands, rejectCommand, submitCommand} from "../../actions/commandService";
+import RejectIcon from "../../assets/svg/cancel-close-svgrepo-com.svg"
 
-const OrderComponent = () => {
+const OrderComponent = ({commands}) => {
 
     const [show, setShow] = useState(false);
     const [warning, setWarning] = useState(false);
     const [selected, setSelected] = useState({});
     const [action, setAction] = useState('add');
 
-    const columns = ['Order Date', 'Customer', 'Total', 'Currency', 'Payment Method', 'Payment Date', 'Status'];
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(allCommands());
+    }, []);
+
+    const columns = ['Order Date', 'Last Modification', 'Customer', 'Payment Method', 'Status', 'Total', 'Currency'];
+
 
     const handleClose = () => {
         setShow(false);
@@ -46,6 +55,7 @@ const OrderComponent = () => {
         </span>
     ));
 
+
     return (
         <React.Fragment>
             <div>
@@ -63,28 +73,28 @@ const OrderComponent = () => {
                             </tr>
                             </thead>
                             <tbody className="text-center">
-                            {orders && orders.map(order =>
+                            {commands && commands.map(order =>
                                 <tr style={{fontFamily: 'Lato'}} key={order.id}>
-                                    <td>{order.date_order}</td>
-                                    <td>{order.client && order.client.fullName}</td>
-                                    <td>{order.total}</td>
-                                    <td>{order.currency}</td>
+                                    <td>{order.createdDate && order.createdDate.slice(0, 10)}</td>
+                                    <td>{order.updatedDate && order.updatedDate.slice(0, 10)}</td>
+                                    <td>{order.client && `${order.client.lastName} ${order.client.firstName}`}</td>
                                     <td>
-                                        <SpanWrapper>{order.mode_payment}</SpanWrapper>
+                                        <SpanWrapper>AT DELIVERY</SpanWrapper>
                                     </td>
-                                    <td>{order.date_payment ? order.date_payment : '-'}</td>
-                                    <td>{order.status !== 'CREATED' ? (
-                                        <OverlayTrigger placement="bottom" overlay={(props) => (
-                                            <Tooltip id="tooltip-top" {...props}>
-                                                Validated
-                                            </Tooltip>
-                                        )}>
+                                    <td>
+                                        {order.status === 'SUBMITTED' && (
+                                            <OverlayTrigger placement="bottom" overlay={(props) => (
+                                                <Tooltip id="tooltip-top" {...props}>
+                                                    Validated
+                                                </Tooltip>
+                                            )}>
                                             <span role="button">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="35" height="22"
                                                      viewBox="0 0 18 18">
                                                     <g id="Butt_valider" data-name="Butt valider"
                                                        transform="translate(-18.651 -0.396)">
-                                                        <rect id="Rectangle_558_copie_2" data-name="Rectangle 558 copie 2"
+                                                        <rect id="Rectangle_558_copie_2"
+                                                              data-name="Rectangle 558 copie 2"
                                                               width="18" height="18" rx="9"
                                                               transform="translate(18.651 0.396)"
                                                               fill="#8dc6bf"/>
@@ -99,45 +109,81 @@ const OrderComponent = () => {
                                                 </svg>
                                             </span>
 
-                                        </OverlayTrigger>
-                                    ) : (
-                                        <OverlayTrigger placement="bottom" overlay={(props) => (
-                                            <Tooltip id="tooltip-top" {...props}>
-                                                Created
-                                            </Tooltip>
-                                        )}>
+                                            </OverlayTrigger>
+                                        )}
+                                        {order.status === 'REJECTED' && (
+                                            <OverlayTrigger placement="bottom" overlay={(props) => (
+                                                <Tooltip id="tooltip-top" {...props}>
+                                                    Rejected
+                                                </Tooltip>
+                                            )}>
+                                            <span role="button">
+                                          <img src={RejectIcon} alt='reject icon'/>
+                                            </span>
+
+                                            </OverlayTrigger>
+                                        )}
+                                        {order.status === 'CREATED' && (
+                                            <OverlayTrigger placement="bottom" overlay={(props) => (
+                                                <Tooltip id="tooltip-top" {...props}>
+                                                    Created
+                                                </Tooltip>
+                                            )}>
                                             <span role="button">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="35" height="22"
                                                      viewBox="0 0 18 18">
                                                     <g id="Groupe_55313" data-name="Groupe 55313"
                                                        transform="translate(-269 -1669)">
-                                                        <rect id="Rectangle_558_copie_2" data-name="Rectangle 558 copie 2"
-                                                              width="18" height="18" rx="9" transform="translate(269 1669)"
+                                                        <rect id="Rectangle_558_copie_2"
+                                                              data-name="Rectangle 558 copie 2"
+                                                              width="18" height="18" rx="9"
+                                                              transform="translate(269 1669)"
                                                               fill="#fa9571"/>
                                                         <g id="Groupe_52034" data-name="Groupe 52034"
                                                            transform="translate(278 1673)">
-                                                            <line id="Ligne_16" data-name="Ligne 16" y2="4.844" fill="none"
-                                                                  stroke="#fff" stroke-linecap="round" stroke-width="3"/>
+                                                            <line id="Ligne_16" data-name="Ligne 16" y2="4.844"
+                                                                  fill="none"
+                                                                  stroke="#fff" stroke-linecap="round"
+                                                                  stroke-width="3"/>
                                                             <line id="Ligne_17" data-name="Ligne 17" y2="0.666"
-                                                                  transform="translate(0 9.175)" fill="none" stroke="#fff"
+                                                                  transform="translate(0 9.175)" fill="none"
+                                                                  stroke="#fff"
                                                                   stroke-linecap="round" stroke-width="3"/>
                                                         </g>
                                                     </g>
                                                 </svg>
                                             </span>
-                                        </OverlayTrigger>
+                                            </OverlayTrigger>
+                                        )}
+                                    </td>
+                                    <td>{order.total}</td>
+                                    <td>MAD</td>
+                                    {order.status === 'CREATED' && (
+                                        <td className="text-center">
+                                            <ButtonWrapper
+                                                bgColor='#D6AE4F'
+                                                size={13}
+                                                padding='0.2rem 1rem'
+                                                mr={5}
+                                                color='#FFF'
+                                                onClick={() => {
+                                                    dispatch(submitCommand(order.id))
+                                                }}>
+                                                Submit
+                                            </ButtonWrapper>
+                                            <ButtonWrapper
+                                                bgColor='#606779'
+                                                size={13}
+                                                padding='0.2rem 1rem'
+                                                mr={5}
+                                                color='#FFF'
+                                                onClick={() => {
+                                                    dispatch(rejectCommand(order.id))
+                                                }}>
+                                                Reject
+                                            </ButtonWrapper>
+                                        </td>
                                     )}
-                                    </td>
-                                    <td className="text-center">
-                                        <ButtonWrapper bgColor='#D6AE4F' size={13} padding='0.2rem 1rem' mr={5}
-                                                       color='#FFF'>
-                                            Submit
-                                        </ButtonWrapper>
-                                        <ButtonWrapper bgColor='#606779' size={13} padding='0.2rem 1rem' mr={5}
-                                                       color='#FFF'>
-                                            Reject
-                                        </ButtonWrapper>
-                                    </td>
                                 </tr>
                             )}
                             </tbody>
@@ -256,8 +302,12 @@ const OrderComponent = () => {
         </React.Fragment>
     );
 }
-
-export default OrderComponent;
+const mapStateToProps = state => {
+    return {
+        commands: state.commandReducer.commands
+    }
+}
+export default connect(mapStateToProps)(OrderComponent);
 
 export const ButtonWrapper = styled('button')(({bgColor, color, mr, padding, size}) => ({
     fontFamily: 'Lato_medium, serif',

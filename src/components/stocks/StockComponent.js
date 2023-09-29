@@ -1,50 +1,44 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import TableWrapper from "../../containers/TableWrapper";
-import {stock} from "../../context/data";
 import Title from "../../containers/Title";
 import {Button, Form, InputGroup, Modal} from 'react-bootstrap';
 import styled from "styled-components";
 import {ButtonWrapper} from "../orders/OrderComponent";
+import {connect, useDispatch} from "react-redux";
+import {allStore, editQuantity} from "../../actions/storeService";
 
-const locations = [
-    {
-        code: 1,
-        value: 'department'
-    },
-    {
-        code: 2,
-        value: 'treasury '
-    },
-    {
-        code: 3,
-        value: 'rack'
-    },
-    {
-        code: 4,
-        value: 'shelf'
-    },
-];
-const StockComponent = () => {
+const StockComponent = ({list, loading}) => {
 
     const [show, setShow] = useState(false);
-    const [warning, setWarning] = useState(false);
     const [selected, setSelected] = useState({});
+    const [quantity, setQuantity] = useState(0);
     const [action, setAction] = useState('add');
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(allStore())
+    }, []);
+
+    useEffect(() => {
+        if (selected && selected.quantity) {
+            setQuantity(selected.quantity)
+        }
+    }, [selected]);
+
+    const onchange = q => {
+        setQuantity(q);
+    }
 
     const columns = ['Title', 'Price', 'Currency', 'Company', 'Quantity', 'Location', 'Action'];
 
     const handleClose = () => {
         setShow(false);
-        setWarning(false);
     };
-    const handleShow = () => {
-        setShow(true);
-        setAction('add');
+    const handleEditQuantity = async () => {
+        await dispatch(editQuantity(selected.id, quantity));
+        setShow(false);
         setSelected({});
-    };
-
-    const onDelete = () => {
-        setWarning(true);
     };
 
     const handleEdit = data => {
@@ -56,20 +50,10 @@ const StockComponent = () => {
     return (
         <React.Fragment>
             <div>
-                <div style={{ position: 'relative', top: '3rem' }} className="container">
+                <div style={{position: 'relative', top: '3rem'}} className="container">
                     <Title title="Stock management"/>
-                    <ButtonWrapper bgColor='#606779' color='#FFF' className="mb-2" onClick={handleShow}>
-                        New Product
-                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="17" fill="currentColor"
-                             className="bi bi-plus-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                            <path
-                                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                        </svg>
-                    </ButtonWrapper>
-
                     <Paper>
-                        <TableWrapper onDelete={onDelete} handleEdit={handleEdit} data={stock} columns={columns}/>
+                        <TableWrapper handleEdit={handleEdit} data={list} columns={columns}/>
                     </Paper>
                 </div>
             </div>
@@ -90,7 +74,7 @@ const StockComponent = () => {
                 </Modal.Header>
                 <Modal.Body style={{padding: '2rem'}}>
                     <InputGroup className="mb-3">
-                        <Form.Control type="text" placeholder="Title"
+                        <Form.Control disabled type="text" placeholder="Title"
                                       value={selected && selected.product && selected.product.title}/>
                         <InputGroup.Text>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -101,7 +85,7 @@ const StockComponent = () => {
                         </InputGroup.Text>
                     </InputGroup>
                     <InputGroup className="mb-3">
-                        <Form.Control type="text" placeholder="Company"
+                        <Form.Control disabled type="text" placeholder="Company"
                                       value={selected && selected.product && selected.product.company}/>
                         <InputGroup.Text>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -114,12 +98,13 @@ const StockComponent = () => {
                         </InputGroup.Text>
                     </InputGroup>
                     <InputGroup className="mb-3">
-                        <Form.Control type="number" placeholder="Price"
+                        <Form.Control disabled type="number" placeholder="Price"
                                       value={selected && selected.product && selected.product.price}/>
                         <InputGroup.Text style={{padding: '0.375rem 0.95rem'}}>$</InputGroup.Text>
                     </InputGroup>
                     <InputGroup className="mb-3">
-                        <Form.Control type="number" placeholder="Quantity" value={selected && selected.quantity}/>
+                        <Form.Control type="number" placeholder="Quantity" value={quantity}
+                                      onChange={e => onchange(e.target.value)}/>
                         <InputGroup.Text>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  className="bi bi-123" viewBox="0 0 16 16">
@@ -129,13 +114,8 @@ const StockComponent = () => {
                         </InputGroup.Text>
                     </InputGroup>
                     <InputGroup className="mb-3">
-                        <Form.Select className="form-control">
-                            {locations && locations.map((location) => (
-                                <option value={location.code}>
-                                    {location.value}
-                                </option>
-                            ))}
-                        </Form.Select>
+                        <Form.Control disabled type="text" placeholder="Location"
+                                      value={selected && selected.emplacement}/>
                         <InputGroup.Text>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  className="bi bi-shop-window" viewBox="0 0 16 16">
@@ -169,7 +149,7 @@ const StockComponent = () => {
                         <ButtonWrapper bgColor='#606779' color="#FFF" className="mr-2" onClick={handleClose}>
                             Reset
                         </ButtonWrapper>
-                        <ButtonWrapper bgColor='#D6AE4F' color='#FFF' onClick={handleClose}>
+                        <ButtonWrapper bgColor='#D6AE4F' color='#FFF' onClick={handleEditQuantity}>
                             {action === 'add' ? 'Submit' : 'Edit'}
                         </ButtonWrapper>
                     </div>
@@ -177,31 +157,17 @@ const StockComponent = () => {
                 </div>
             </Modal>
 
-            <Modal size="lg" show={warning} onHide={() => setWarning(false)} centered
-                   style={{fontFamily: 'Lato'}}>
-                <Modal.Header style={{backgroundColor: '#303c50', color: '#fff', fontFamily: 'Lato_light'}}>
-                    <Modal.Title>Warning</Modal.Title>
-                    <Button onClick={handleClose}
-                            style={{backgroundColor: "transparent", borderColor: "transparent"}}
-                            data-bs-dismiss="modal"
-                            data-bs-target="#exampleModal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="30" fill="currentColor"
-                             className="bi bi-x-lg" viewBox="0 0 16 16">
-                            <path
-                                d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
-                        </svg>
-                    </Button>
-                </Modal.Header>
-                <Modal.Body style={{padding: '4rem 1.2rem', fontSize: 20, fontFamily: 'Lato_light'}}>
-                    Do you really want to delete this product ?
-                </Modal.Body>
-            </Modal>
-
         </React.Fragment>
     );
 }
+const mapStateToProps = state => {
+    return {
+        list: state.storeReducer.list,
+        loading: state.storeReducer.loading
+    }
+}
 
-export default StockComponent;
+export default connect(mapStateToProps)(StockComponent);
 
 const Paper = styled.div`
   background-color: #fff;

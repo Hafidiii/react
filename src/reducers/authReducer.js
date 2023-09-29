@@ -1,7 +1,9 @@
 import {
-    ALERT,
+    ALL_USERS,
+    ALL_USERS_FAIL,
+    ALL_USERS_SUCCESS,
     HISTORY_PUSH,
-    LOGIN_ACTION,
+    LOGIN_ACTION, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS,
     SIGN_IN,
     SIGN_IN_FAIL,
     SIGN_IN_SUCCESS,
@@ -13,6 +15,7 @@ import {
 const initialState = {
     isLoggedIn: false,
     path: 'signIn',
+    clients: [],
     alert: {
         open: undefined,
         message: undefined
@@ -23,11 +26,6 @@ const initialState = {
 
 export default function authReducer(state = initialState, {type, payload}) {
     switch (type) {
-        case ALERT:
-            return {
-                ...state,
-                alert: payload,
-            }
         case HISTORY_PUSH:
             return {
                 ...state,
@@ -37,6 +35,35 @@ export default function authReducer(state = initialState, {type, payload}) {
             return {
                 ...state,
                 isLoggedIn: payload,
+            }
+        case ALL_USERS:
+            return {
+                ...state,
+                loading: true,
+            }
+        case ALL_USERS_SUCCESS:
+            return {
+                ...state,
+                clients: payload
+            }
+        case ALL_USERS_FAIL:
+            return {
+                ...state
+            }
+        case REMOVE_USER:
+            return {
+                ...state,
+                loading: true
+            }
+        case REMOVE_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false
+            }
+        case REMOVE_USER_FAIL:
+            return {
+                ...state,
+                loading: false
             }
         case SIGN_IN:
             return {
@@ -76,3 +103,6 @@ export default function authReducer(state = initialState, {type, payload}) {
             return state;
     }
 }
+
+
+const obj = {a: 1}

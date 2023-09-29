@@ -8,15 +8,16 @@ import {BrowserRouter} from "react-router-dom";
 import LoginComponent from "./components/login";
 import {Alert, Col, Row} from "react-bootstrap";
 import styled from 'styled-components';
+import {alert} from "./actions/alertService";
 
 const App = (props) => {
 
-    const {auth: {isLoggedIn, alert}} = props;
-    const {open, message} = alert;
+    const {auth: {isLoggedIn}, alert: {open, message}} = props;
 
     return (
         <main>
-            <Alert hidden={open === undefined} variant={open ? "danger" : "success"}>
+            <Alert style={{textAlign: 'center', position: 'absolute', width: '100%', top: 0}} hidden={open === undefined}
+                   variant={open ? "danger" : "success"}>
                 <LabelWrapper>
                     {message}
                 </LabelWrapper>
@@ -45,12 +46,13 @@ const App = (props) => {
 
 const LabelWrapper = styled.span`
   font-family: Lato_medium, serif;
-  font-size: 15px;
+  font-size: 15px
 
 `;
 const mapStateToProps = state => {
     return {
-        auth: state.authReducer
+        auth: state.auth,
+        alert: state.alertReducer.alert
     }
 }
 export default connect(mapStateToProps)(App);

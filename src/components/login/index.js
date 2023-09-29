@@ -11,7 +11,7 @@ const LoginComponent = ({ path }) => {
 };
 const mapStateToProps = state => {
     return {
-        path: state.authReducer.path
+        path: state.auth.path
     }
 }
 export default connect(mapStateToProps)(LoginComponent);
