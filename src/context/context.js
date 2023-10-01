@@ -141,7 +141,6 @@ const ProductProvider = ({children, listProducts, detail}) => {
 
     const clearCart = () => {
         setCart([]);
-        initProducts(listProducts);
         addTotals();
     }
 

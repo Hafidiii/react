@@ -84,14 +84,14 @@ export const saveCommand = (products, clearCart) => async dispatch => {
 
                 setTimeout(() => {
                     dispatch(alert({open: undefined, message: undefined}));
-                }, 5000);
+                }, 3000);
 
                 clearCart();
             } else {
                 dispatch(alert({open: true, message}));
                 setTimeout(() => {
                     dispatch(alert({open: undefined, message: undefined}));
-                }, 5000);
+                }, 3000);
             }
 
         })
