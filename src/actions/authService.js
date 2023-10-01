@@ -57,32 +57,28 @@ export const removeUser = id => async dispatch => {
 
 export const signUp = client => async dispatch => {
 
-    dispatch({
-        type: SIGN_UP
-    });
-
     await axios.post(`${API}/clients/signup`, client)
         .then(response => {
             const {data: {success, message}} = response;
             if (success) {
-
                 dispatch(setPath('signIn'));
                 dispatch(alert({open: false, message}));
 
                 setTimeout(() => {
                     dispatch(alert({open: undefined, message: undefined}));
-                }, 5000);
+                }, 3000);
             } else {
                 dispatch(alert({open: true, message}));
                 setTimeout(() => {
                     dispatch(alert({open: undefined, message: undefined}));
-                }, 5000);
+                }, 3000);
             }
         })
-        .catch(() => {
-            dispatch({
-                type: SIGN_UP_FAIL
-            });
+        .catch((err) => {
+            dispatch(alert({open: true, err}));
+            setTimeout(() => {
+                dispatch(alert({open: undefined, message: undefined}));
+            }, 3000);
         });
 };
 
