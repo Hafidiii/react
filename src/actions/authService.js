@@ -32,14 +32,14 @@ export const allUsers = () => async dispatch => {
         })
 }
 
-export const removeUser = id => async dispatch => {
+export const actionOnUser = (id, action) => async dispatch => {
 
     dispatch({
         type: REMOVE_USER,
 
     });
 
-    await axios.get(`${API}/clients/remove/${id}`)
+    await axios.get(action === 'block' ? `${API}/clients/deactivate/${id}` : `${API}/clients/reactivate/${id}`)
         .then(res => {
             dispatch({
                 type: REMOVE_USER_SUCCESS,

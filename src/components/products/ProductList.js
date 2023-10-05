@@ -9,9 +9,7 @@ const ProductList = () => {
     return (
         <React.Fragment>
             <div>
-                <div style={{position: 'relative', top: '3rem'}} className="container">
-                    <Title name="our" title="products"/>
-
+                <div style={{position: 'relative', left: '2rem', top: '2rem'}}>
                     <div className="row">
                         <ProductConsumer>
                             {(value) => {

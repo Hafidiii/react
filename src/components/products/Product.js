@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -9,7 +9,7 @@ export default class Product extends Component {
     render() {
         const { id, title, img, price, inCart } = this.props.product;
         return (
-            <ProductWrapper className="col-9 max-auto col-md-6 col-lg-3 my-3">
+            <ProductWrapper className="col-9 max-auto col-md-6 col-lg-2 my-3">
                 <div className="card" style={{ borderRadius: 0, border: '1px solid  #606779'}}>
                     <ProductConsumer>
                         {value => (
@@ -38,10 +38,15 @@ export default class Product extends Component {
                     </ProductConsumer>
                     {/* card footer */}
                     <div className="card-footer d-flex justify-content-between" style={{fontFamily: 'Lato'}}>
-                        <p className="align-self-center mb-0" >{title}</p>
+                        <p className="align-self-center mb-0">{title}</p>
                         <h5 className="text-blue mb-0">
-                            <span className="mr-1">$</span>
                             {price}
+                            <span
+                                style={{fontSize: 13, position: 'relative', bottom: 10, left: 5, fontWeight: 'bold'}}
+                                className="mr-1">
+                                MAD
+                            </span>
+
                         </h5>
                     </div>
                 </div>
